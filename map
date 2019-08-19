@@ -1,0 +1,131 @@
+<?php
+namespace Rom\City\Entity;
+
+use \Bitrix\Main\Entity;
+use \Bitrix\Main\Type;
+use Bitrix\Main\ORM\Data\DataManager;
+use Bitrix\Main\ORM\Fields\Relations\OneToMany;
+
+//Bitrix\Main\ORM\Data\DataManager
+
+/*
+rom_type - тип поля (string, textarea, ckeditor, hidden)
+rom_name - название поля (label)
+rom_tip - теквст подсказка снизу
+rom_show_in_list - выводить полк в списке админки (=>'Y')
+rom_show_in_form - выводить поле в форме создавния/редактирования (=>'Y')
+*/
+
+class ArticleTable extends Entity\DataManager
+{
+    public static function getTableName()
+    {
+        return 'article';
+    }
+
+    public static function getMap()
+    {
+//                    `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+//                    `idold` INT DEFAULT 0,
+//                    `nom` INT DEFAULT 0,
+//                    `dateadd` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//                    `title` TEXT,
+//                    `subtitle` TEXT,
+//                    `keywords` TEXT,
+//                    `description` TEXT,
+//                    `brief` TEXT,
+//                    `text` TEXT,
+//                    `newspaper` INT DEFAULT 0,
+//                    `issue` INT DEFAULT 0,
+//                    `view` INT DEFAULT 0,
+//                    `ishide` TINYINT(1) DEFAULT 0
+        return array(
+            //ID
+            new Entity\IntegerField('ID', array(
+                'primary' => true,
+                'autocomplete' => true,
+                'column_name' => 'id',
+                'rom_name' => '№',
+                'rom_show_in_list'=>'Y',
+            )),
+            //создатель
+            new Entity\IntegerField('USER', array(
+                'default_value' => 0,
+                'column_name' => 'user'
+            )),
+            //старый id
+            new Entity\IntegerField('idold', array(
+                'default_value' => 0,
+            )),
+            // сортировка
+            new Entity\IntegerField('nom', array(
+                'default' => 0,
+            )),
+            //дата добавления
+            new Entity\DatetimeField('dateadd', array(
+                'required' => true,
+                'default_value' => new Type\DateTime
+            )),
+            //Название
+            new Entity\StringField('NAME', array(
+                'required' => true,
+                'column_name' => 'title',
+                'rom_type' => 'string',
+                'rom_name' => 'Заголовок',
+                'rom_show_in_list'=>'Y',
+                'rom_show_in_form'=>'Y',
+            )),
+            //Подзаголовок
+            new Entity\StringField('subtitle', array(
+                'rom_type' => 'string',
+                'rom_name' => 'Подзаголовок',
+                'rom_show_in_form'=>'Y',
+            )),
+            //Описание книги
+            new Entity\TextField('keywords', array(
+                'rom_type' => 'string',
+                'rom_name' => 'Ключевые слова',
+                'rom_show_in_form'=>'Y',
+            )),
+            //Описание
+            new Entity\TextField('description', array(
+                'rom_type' => 'string',
+                'rom_name' => 'Описание страницы (метатег)',
+                'rom_tip'=>'Используется при отображении снипета',
+                'rom_show_in_form'=>'Y',
+            )),
+            //Описание книги
+            new Entity\TextField('brief', array(
+                'rom_type' => 'string',
+                'rom_name' => 'Брифинг',
+                'rom_show_in_form'=>'Y',
+            )),
+            //Описание книги
+            new Entity\TextField('text', array(
+//                'rom_type' => 'string',
+//                'rom_name' => 'Текст статьи',
+            )),
+            //газета
+            new Entity\IntegerField('newspaper', array(
+                'default_value' => 0,
+            )),
+            //номер
+            new Entity\IntegerField('issue', array(
+                'default_value' => 0,
+            )),
+            //просмотров
+            new Entity\IntegerField('view', array(
+                'default_value' => 0,
+            )),
+            //скрыто
+            new Entity\BooleanField('ishide', array(
+                'values' => array('N', 'Y'),
+                'default_value' => 'N',
+            )),
+
+            //отношение с
+            (new OneToMany('IMAGES', ArticleImageTable::class, 'article_id'))->configureJoinType('inner'),
+
+        );
+    }
+}
